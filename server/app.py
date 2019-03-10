@@ -16,30 +16,10 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app)
 
-BOOKS = [
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'On the Road',
-        'author': 'Jack Kerouac',
-        'read': True,
-        'price': '19.99'
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Harry Potter and the Philosopher\'s Stone',
-        'author': 'J. K. Rowling',
-        'read': False,
-        'price': '9.99'
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Green Eggs and Ham',
-        'author': 'Dr. Seuss',
-        'read': True,
-        'price': '3.99'
-    }
-]
-
+USER = [
+    { 'id': uuid.uuid4().hex, "username": "mceylan2", "email": "mceylan2@tgm.ac.at", "image": "bild.jpg"},
+    { 'id': uuid.uuid4().hex, "username": "eecevit", "email": "eecevit@email.com", "image": "null"},
+    { 'id': uuid.uuid4().hex, "username": "mceylan", "email": "mceylan@email.com", "image": "null"}]
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
@@ -47,43 +27,41 @@ def ping_pong():
     return jsonify('pong!')
 
 
-@app.route('/books', methods=['GET', 'POST'])
-def all_books():
+@app.route('/user', methods=['GET', 'POST'])
+def all_user():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
-        BOOKS.append({
+        USER.append({
             'id': uuid.uuid4().hex,
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read'),
-            'price': post_data.get('price')
+            'username': post_data.get('username'),
+            'email': post_data.get('email'),
+            'image': post_data.get('image'),
         })
-        response_object['message'] = 'Book added!'
+        response_object['message'] = 'User added!'
     else:
-        response_object['books'] = BOOKS
+        response_object['user'] = USER
     return jsonify(response_object)
 
 
-@app.route('/books/<book_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/user/<book_id>', methods=['GET', 'PUT', 'DELETE'])
 def single_book(book_id):
     response_object = {'status': 'success'}
     if request.method == 'GET':
         # TODO: refactor to a lambda and filter
         return_book = ''
-        for book in BOOKS:
+        for book in USER:
             if book['id'] == book_id:
                 return_book = book
         response_object['book'] = return_book
     if request.method == 'PUT':
         post_data = request.get_json()
         remove_book(book_id)
-        BOOKS.append({
+        USER.append({
             'id': uuid.uuid4().hex,
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read'),
-            'price': post_data.get('price')
+            'username': post_data.get('username'),
+            'email': post_data.get('email'),
+            'image': post_data.get('image'),
         })
         response_object['message'] = 'Book updated!'
     if request.method == 'DELETE':
@@ -120,10 +98,10 @@ def get_charge(charge_id):
     return jsonify(response_object), 200
 
 
-def remove_book(book_id):
-    for book in BOOKS:
-        if book['id'] == book_id:
-            BOOKS.remove(book)
+def remove_book(user_id):
+    for book in USER:
+        if book['id'] == user_id:
+            USER.remove(book)
             return True
     return False
 
