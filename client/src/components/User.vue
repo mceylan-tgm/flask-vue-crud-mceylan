@@ -94,7 +94,7 @@
                       label-for="form-username-edit-input">
           <b-form-input id="form-username-edit-input"
                         type="text"
-                        v-model="editForm.username"
+                        v-model="editUserForm.username"
                         required
                         placeholder="Enter Username">
           </b-form-input>
@@ -104,20 +104,21 @@
                       label-for="form-email-edit-input">
           <b-form-input id="form-email-edit-input"
                         type="text"
-                        v-model="editForm.email"
+                        v-model="editUserForm.email"
                         required
                         placeholder="Enter email">
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-image-edit-group"
+        <b-form-group id="form-image-group"
                       label="Image:"
-                      label-for="form-image-edit-input">
-          <b-form-input id="form-image-edit-input"
-                        type="number"
-                        v-model="editForm.image"
+                      label-for="form-image-input">
+          <b-form-input id="form-image-input"
+                        type="text"
+                        v-model="editUserForm.image"
                         required
                         placeholder="Enter image">
           </b-form-input>
+        </b-form-group>
         </b-form-group>
         <b-button type="submit" variant="primary">Update</b-button>
         <b-button type="reset" variant="danger">Cancel</b-button>
@@ -139,7 +140,7 @@ export default {
         email: '',
         image: '',
       },
-      editForm: {
+      editUserForm: {
         username: '',
         email: '',
         image: '',
@@ -209,9 +210,9 @@ export default {
       this.addUserForm.username = '';
       this.addUserForm.email = '';
       this.addUserForm.image = '';
-      this.editForm.username = '';
-      this.editForm.email = '';
-      this.editForm.image = '';
+      this.editUserForm.username = '';
+      this.editUserForm.email = '';
+      this.editUserForm.image = '';
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -232,7 +233,7 @@ export default {
         email: this.addUserForm.email,
         image: this.addUserForm.image, // property shorthand
       };
-      this.updateUser(payload, this.editForm.id);
+      this.updateUser(payload, this.editUserForm.id);
     },
     onReset(evt) {
       evt.preventDefault();
@@ -249,7 +250,7 @@ export default {
       this.removeUser(user.id);
     },
     editUser(user) {
-      this.editForm = user;
+      this.editUserForm = user;
     },
   },
   created() {
