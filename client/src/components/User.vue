@@ -22,7 +22,7 @@
             <tr v-for="(user, index) in user" :key="index">
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
-              <td>{{ user.image }}</td>
+              <td><img :src="user.image" class="rounded-circle" alt="Circle image" width="50" height="50"/></td>
               <td>
                 <button type="button"
                         class="btn btn-warning btn-sm"
