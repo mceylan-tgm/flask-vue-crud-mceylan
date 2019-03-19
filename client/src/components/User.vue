@@ -119,7 +119,6 @@
                         placeholder="Enter image">
           </b-form-input>
         </b-form-group>
-        </b-form-group>
         <b-button type="submit" variant="primary">Update</b-button>
         <b-button type="reset" variant="danger">Cancel</b-button>
       </b-form>
@@ -229,9 +228,9 @@ export default {
       evt.preventDefault();
       this.$refs.editUserModal.hide();
       const payload = {
-        username: this.addUserForm.username,
-        email: this.addUserForm.email,
-        image: this.addUserForm.image, // property shorthand
+        username: this.editUserForm.username,
+        email: this.editUserForm.email,
+        image: this.editUserForm.image, // property shorthand
       };
       this.updateUser(payload, this.editUserForm.id);
     },
