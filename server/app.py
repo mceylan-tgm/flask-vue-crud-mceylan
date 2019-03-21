@@ -1,33 +1,47 @@
 import os
 import uuid
 
-#import stripe
+
 from flask import Flask, jsonify, request
+from flask_httpauth import HTTPBasicAuth
 from flask_cors import CORS
 
 
 # configuration
-DEBUG = True
 
 # instantiate the app
 app = Flask(__name__)
-app.config.from_object(__name__)
-
 # enable CORS
 CORS(app)
+auth = HTTPBasicAuth()
+
 
 USER = [
     { 'id': uuid.uuid4().hex, "username": "mceylan2", "email": "mceylan2@tgm.ac.at", "image": "bild.jpg"},
     { 'id': uuid.uuid4().hex, "username": "eecevit", "email": "eecevit@email.com", "image": "null"},
     { 'id': uuid.uuid4().hex, "username": "mceylan", "email": "mceylan@email.com", "image": "null"}]
 
+
+users = {
+    "mceylan": "secret",
+}
+
+
+@auth.get_password
+def get_pw(username):
+    if username in users:
+        return users.get(username)
+    return None
+
 # sanity check route
+
 @app.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify('pong!')
 
 
 @app.route('/user', methods=['GET', 'POST'])
+@auth.login_required
 def all_user():
     response_object = {'status': 'success'}
     if request.method == 'POST':
@@ -45,6 +59,7 @@ def all_user():
 
 
 @app.route('/user/<book_id>', methods=['GET', 'PUT', 'DELETE'])
+@auth.login_required
 def single_book(book_id):
     response_object = {'status': 'success'}
     if request.method == 'GET':
@@ -69,35 +84,7 @@ def single_book(book_id):
         response_object['message'] = 'Book removed!'
     return jsonify(response_object)
 
-
-@app.route('/charge', methods=['POST'])
-def create_charge():
-    post_data = request.get_json()
-    amount = round(float(post_data.get('book')['price']) * 100)
-    stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
-    charge = stripe.Charge.create(
-        amount=amount,
-        currency='usd',
-        card=post_data.get('token'),
-        description=post_data.get('book')['title']
-    )
-    response_object = {
-        'status': 'success',
-        'charge': charge
-    }
-    return jsonify(response_object), 200
-
-
-@app.route('/charge/<charge_id>')
-def get_charge(charge_id):
-    stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
-    response_object = {
-        'status': 'success',
-        'charge': stripe.Charge.retrieve(charge_id)
-    }
-    return jsonify(response_object), 200
-
-
+@auth.login_required
 def remove_book(user_id):
     for book in USER:
         if book['id'] == user_id:

@@ -22,7 +22,10 @@
             <tr v-for="(user, index) in user" :key="index">
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
-              <td><img :src="user.image" class="rounded-circle" alt="Circle image" width="50" height="50"/></td>
+              <td>
+                <img :src="user.image" class="rounded-circle"
+                     alt="Circle image" width="50" height="50"/>
+              </td>
               <td>
                 <button type="button"
                         class="btn btn-warning btn-sm"
@@ -154,18 +157,27 @@ export default {
   methods: {
     getUser() {
       const path = 'http://localhost:5000/user';
-      axios.get(path)
+      axios.get(path, {
+        auth: {
+          username: 'mceylan',
+          password: 'secret',
+        } })
         .then((res) => {
+          console.log('asd');
           this.user = res.data.user;
         })
         .catch((error) => {
-          // eslint-disable-next-line
+          // eslint-disab le-next-line
           console.error(error);
         });
     },
     addUser(payload) {
       const path = 'http://localhost:5000/user';
-      axios.post(path, payload)
+      axios.post(path, payload, {
+        auth: {
+          username: 'mceylan',
+          password: 'secret',
+        } })
         .then(() => {
           this.getUser();
           this.message = 'User added!';
@@ -179,7 +191,11 @@ export default {
     },
     updateUser(payload, userID) {
       const path = `http://localhost:5000/user/${userID}`;
-      axios.put(path, payload)
+      axios.put(path, payload, {
+        auth: {
+          username: 'mceylan',
+          password: 'secret',
+        } })
         .then(() => {
           this.getUser();
           this.message = 'User updated!';
@@ -193,7 +209,11 @@ export default {
     },
     removeUser(userID) {
       const path = `http://localhost:5000/user/${userID}`;
-      axios.delete(path)
+      axios.delete(path, {
+        auth: {
+          username: 'mceylan',
+          password: 'secret',
+        } })
         .then(() => {
           this.getUser();
           this.message = 'User removed!';
