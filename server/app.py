@@ -1,11 +1,9 @@
 import os
 import uuid
 
-
 from flask import Flask, jsonify, request
 from flask_httpauth import HTTPBasicAuth
 from flask_cors import CORS
-
 
 # configuration
 
@@ -15,12 +13,10 @@ app = Flask(__name__)
 CORS(app)
 auth = HTTPBasicAuth()
 
-
 USER = [
-    { 'id': uuid.uuid4().hex, "username": "mceylan2", "email": "mceylan2@tgm.ac.at", "image": "bild.jpg"},
-    { 'id': uuid.uuid4().hex, "username": "eecevit", "email": "eecevit@email.com", "image": "null"},
-    { 'id': uuid.uuid4().hex, "username": "mceylan", "email": "mceylan@email.com", "image": "null"}]
-
+    {'id': uuid.uuid4().hex, "username": "mceylan2", "email": "mceylan2@tgm.ac.at", "image": "bild.jpg"},
+    {'id': uuid.uuid4().hex, "username": "eecevit", "email": "eecevit@email.com", "image": "null"},
+    {'id': uuid.uuid4().hex, "username": "mceylan", "email": "mceylan@email.com", "image": "null"}]
 
 users = {
     "mceylan": "secret",
@@ -33,11 +29,8 @@ def get_pw(username):
         return users.get(username)
     return None
 
-# sanity check route
 
-@app.route('/ping', methods=['GET'])
-def ping_pong():
-    return jsonify('pong!')
+# sanity check route
 
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -45,7 +38,8 @@ def ping_pong():
 def all_user():
     response_object = {'status': 'success'}
     if request.method == 'POST':
-        post_data = request.get_json()
+        post_data = request.get_json(force=True)
+        print(post_data)
         USER.append({
             'id': uuid.uuid4().hex,
             'username': post_data.get('username'),
@@ -83,6 +77,7 @@ def single_book(book_id):
         remove_book(book_id)
         response_object['message'] = 'Book removed!'
     return jsonify(response_object)
+
 
 @auth.login_required
 def remove_book(user_id):
